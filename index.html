@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IU.org form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-200">
+    <div class="h-screen">
+        <div
+            class="max-w-md mx-auto bg-white text-black rounded-xl shadow-md overflow-hidden md:max-w-2xl m-10">
+            <div class="md:flex h-full">
+                <div class="md:shrink-0">
+                    <img class="w-full object-cover h-full md:w-48"
+                        src="https://cdn.pixabay.com/photo/2024/05/26/15/27/anime-8788959_1280.jpg"
+                        alt="Modern building architecture">
+                </div>
+                <div class="p-8 w-full" id="card">
+                    <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">{{ title }}</div>
+                    <p href="#" class="block mt-1 mb-5 text-lg leading-tight font-medium text-slate-800">
+                        {{header}}
+                    </p>
+                    <form v-if="loggedOut" class="max-w-sm w-full">
+                        <div class="mb-5">
+                            <label for="email" class="block mb-2 text-sm font-medium text-slate-900">Your email</label>
+                            <input type="email" id="email" v-model="form.email"
+                                class=" w-full bg-slate-50 border border-slate-100 text-slate-900 text-sm rounded-lg block p-2"
+                                placeholder="mail@iu-study.org" required />
+                        </div>
+                        <div class="mb-5">
+                            <label for="password" class="block mb-2 text-sm font-medium text-slate-900">Your password</label>
+                            <input type="password" id="password" v-model="form.password"
+                                class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg block p-2"
+                                required />
+                        </div>
+                        <div class="mb-5">
+                            <label for="gender" class="block mb-2 text-sm font-medium text-slate-900">Select gender</label>
+                            <select id="gender" v-model="form.gender" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg block p-2.5">
+                              <option>Male</option>
+                              <option>Female</option>
+                              <option>Prefer not to answer</option>
+                            </select>
+                        </div>
+                        <div class="flex items-start mb-5">
+                            <div class="flex items-center h-5">
+                                <input id="remember" type="checkbox" value="" v-model="form.remember" class="w-4 h-4 border border-slate-300 rounded bg-slate-50" />
+                            </div>
+                            <label for="remember"
+                                class="ms-2 text-sm font-medium text-slate-900">Remember me</label>
+                        </div>
+                        <button 
+                            type="submit"
+                            @click="submit"
+                            class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full md:w-auto px-5 py-2.5 text-center mb-5"
+                        >
+                            Submit
+                        </button>
+                        <div v-if="error" class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50" role="alert">
+                            <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                            </svg>
+                            <span class="sr-only">Wrong credentials!</span>
+                            <div>
+                              <span class="font-medium">Wrong credentials!</span> {{error}}
+                            </div>
+                          </div>
+                    </form>
+                    <div v-if="loggedIn" class="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50" role="alert">
+                        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only">Info</span>
+                        <div>
+                          <span class="font-medium">Success!</span> You can now access your panel
+                        </div>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="https://unpkg.com/vue@3.4.31/dist/vue.global.js"></script>
+<script>
+    let app = Vue.createApp({
+        setup() {
+            
+        },
+        data () {
+            return {
+                title: 'Get access',
+                header: 'Log in',
+                loggedIn: false,
+                loggedOut: true,
+                form: {
+                    email: '',
+                    password: '',
+                    gender: '',
+                    remember: false,
+                },
+                error: ''
+            }
+        },
+        methods: {
+            async submit() {
+                this.$emit('submit', this.form)
+                if(this.form.email == "test@test.com" & this.form.password == "test123") {
+                    this.loggedOut = false
+                    this.loggedIn = true
+                    this.error = ''
+                    this.header = 'Hello ' + this.form.email
+                    this.title = 'You\'re now authenticated'
+                } else {
+                    this.error = 'Wrong login or password!'
+                }
+            }
+        }
+    }).mount("#card")
+</script>
+
+</html>
