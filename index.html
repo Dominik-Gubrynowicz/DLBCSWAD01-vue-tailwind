@@ -11,16 +11,16 @@
 <body class="bg-slate-200">
     <div class="h-screen" id="app">
         <div class="mt-10 mx-2 mb-5 grid grid-cols-1 lg:grid-cols-2 md:max-w-2xl lg:max-w-4xl max-w-md mx-auto gap-5">
-            <div v-for="product in products" class="col-12 md:col-6  bg-white text-black rounded-xl shadow-md overflow-hidden h-36">
+            <div v-for="product in products" class="col-12 md:col-6  bg-white text-black rounded-xl shadow-md overflow-hidden md:h-36">
                 <div class="md:flex h-full">
                     <div class="md:shrink-0">
                         <img class="w-full object-cover h-full md:w-48"
                             :src="product.image"
-                            alt="Modern building architecture">
+                            alt="Product">
                     </div>
                     <div class="p-8">
                         <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-5">{{ product.name }}</div>
-                        <dev class="flex">
+                        <dev class="flex" v-if="loggedOut">
                             <span class="block p-2.5 m-0 bg-blue-500 text-white rounded-lg px-5 mr-2">{{product.quantity}}</span>
                             <button 
                             type="submit"
@@ -47,7 +47,7 @@
                 <div class="md:shrink-0">
                     <img class="w-full object-cover h-full md:w-48"
                         src="https://cdn.pixabay.com/photo/2024/05/26/15/27/anime-8788959_1280.jpg"
-                        alt="Modern building architecture">
+                        alt="Background image">
                 </div>
                 <div class="p-8 w-full" id="card">
                     <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">{{ title }}</div>
@@ -62,25 +62,19 @@
                                 placeholder="mail@iu-study.org" required />
                         </div>
                         <div class="mb-5">
-                            <label for="password" class="block mb-2 text-sm font-medium text-slate-900">Your password</label>
-                            <input type="password" id="password" v-model="form.password"
-                                class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg block p-2"
-                                required />
-                        </div>
-                        <div class="mb-5">
-                            <label for="gender" class="block mb-2 text-sm font-medium text-slate-900">Select gender</label>
-                            <select id="gender" v-model="form.gender" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg block p-2.5">
-                              <option>Male</option>
-                              <option>Female</option>
-                              <option>Prefer not to answer</option>
+                            <label for="delivery" class="block mb-2 text-sm font-medium text-slate-900">Select delivery type</label>
+                            <select id="delivery" v-model="form.delivery" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg block p-2.5">
+                              <option>Courier</option>
+                              <option>In person</option>
+                              <option>Package box</option>
                             </select>
                         </div>
                         <div class="flex items-start mb-5">
                             <div class="flex items-center h-5">
-                                <input id="remember" type="checkbox" value="" v-model="form.remember" class="w-4 h-4 border border-slate-300 rounded bg-slate-50" />
+                                <input id="checkbox" type="checkbox" value="" v-model="form.checkbox" class="w-4 h-4 border border-slate-300 rounded bg-slate-50" required />
                             </div>
-                            <label for="remember"
-                                class="ms-2 text-sm font-medium text-slate-900">Remember me</label>
+                            <label for="checkbox"   
+                                class="ms-2 text-sm font-medium text-slate-900">Accept terms and conditions</label>
                         </div>
                         <button 
                             type="submit"
@@ -93,9 +87,9 @@
                             <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                             </svg>
-                            <span class="sr-only">Wrong credentials!</span>
+                            <span class="sr-only">Warning</span>
                             <div>
-                              <span class="font-medium">Wrong credentials!</span> {{error}}
+                              <span class="font-medium">Warning!</span> {{error}}
                             </div>
                           </div>
                     </form>
@@ -122,8 +116,8 @@
         },
         data () {
             return {
-                title: 'Get access',
-                header: 'Log in',
+                title: 'Place order',
+                header: 'Fill details',
                 loggedIn: false,
                 loggedOut: true,
                 products: [
@@ -154,9 +148,8 @@
                 ],
                 form: {
                     email: '',
-                    password: '',
-                    gender: '',
-                    remember: false,
+                    delivery: '',
+                    checkbox: false,
                 },
                 error: ''
             }
@@ -164,14 +157,18 @@
         methods: {
             async submit() {
                 this.$emit('submit', this.form)
-                if(this.form.email == "test@test.com" & this.form.password == "test123") {
+                quantity = 0
+                for(product in this.products) {
+                    quantity += product.quantity
+                }
+                if(quantity > 0) {
                     this.loggedOut = false
                     this.loggedIn = true
                     this.error = ''
                     this.header = 'Hello ' + this.form.email
-                    this.title = 'You\'re now authenticated'
+                    this.title = 'You\'ve placed an order!'
                 } else {
-                    this.error = 'Wrong login or password!'
+                    this.error = 'Select an item to place an order!'
                 }
             },
             async increase(id) {
