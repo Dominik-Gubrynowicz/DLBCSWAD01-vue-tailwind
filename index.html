@@ -76,7 +76,8 @@
                         </div>
                         <button 
                             type="submit"
-                            v-on:submit.prevent="submit"
+                            @click="submit"
+                            @submit.prevent
                             class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full md:w-auto px-5 py-2.5 text-center mb-5"
                         >
                             Submit
