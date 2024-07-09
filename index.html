@@ -174,14 +174,14 @@
                 for(id in this.products) {
                     quantity += this.products[id].quantity
                 }
-                if(quantity > 0) {
+                if(quantity > 0 & this.form.email != '' & this.form.checkbox & this.form.delivery != '') {
                     this.loggedOut = false
                     this.loggedIn = true
                     this.error = ''
                     this.header = 'Hello ' + this.form.email
                     this.title = 'You\'ve placed an order!'
                 } else {
-                    this.error = 'Select an item to place an order!'
+                    this.error = 'Select an item and fill the form to place an order!'
                 }
             },
             async increase(id) {
