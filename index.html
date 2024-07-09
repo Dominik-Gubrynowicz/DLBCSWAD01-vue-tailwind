@@ -11,30 +11,34 @@
 <body class="bg-slate-200">
     <div class="h-screen" id="app">
         <div class="mt-10 mx-2 mb-5 grid grid-cols-1 lg:grid-cols-2 md:max-w-2xl lg:max-w-4xl max-w-md mx-auto gap-5">
-            <div v-for="product in products" class="col-12 md:col-6  bg-white text-black rounded-xl shadow-md overflow-hidden md:h-36">
-                <div class="md:flex h-full">
-                    <div class="md:shrink-0">
-                        <img class="w-full object-cover h-full md:w-48"
-                            :src="product.image"
-                            alt="Product">
-                    </div>
-                    <div class="p-8">
-                        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-5">{{ product.name }}</div>
-                        <dev class="flex" v-if="loggedOut">
-                            <span class="block p-2.5 m-0 bg-blue-500 text-white rounded-lg px-5 mr-2">{{product.quantity}}</span>
-                            <button 
-                            @click="increase(product.id)"
-                            class="text-white bg-slate-300 hover:bg-slate-400 font-medium rounded-lg text-sm w-full block md:w-auto px-5 py-2.5 text-center mr-1"
-                            >
-                                 +
-                            </button>
-                            <button 
-                            @click="decrease(product.id)"
-                            class="text-white bg-slate-300 hover:bg-slate-400 font-medium rounded-lg text-sm w-full block md:w-auto px-5 py-2.5 text-center"
-                            >
-                                 -
-                            </button>
-                        </dev>
+            <div v-for="product in products">
+                <div class="col-12 md:col-6 bg-white text-black rounded-xl shadow-md overflow-hidden md:h-36">
+                    <div class="md:flex h-full">
+                        <div class="md:shrink-0 md:h-full h-36">
+                            <img class="w-full object-cover h-full md:w-48"
+                                :src="product.image"
+                                alt="Product">
+                        </div>
+                        <div class="p-8">
+                            <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-5">{{ product.name }} <span class="text-slate-800">(${{ product.price }})</span></div>
+                            <div class="flex" >
+                                <span class="block p-2.5 m-0 bg-blue-500 text-white rounded-lg px-5 mr-2">{{product.quantity}}</span>
+                                <button
+                                    v-if="loggedOut"
+                                    @click="increase(product.id)"
+                                    class="text-white bg-slate-300 hover:bg-slate-400 font-medium rounded-lg text-sm w-full block md:w-auto px-5 py-2.5 text-center mr-1"
+                                >
+                                    +
+                                </button>
+                                <button 
+                                    v-if="loggedOut"
+                                    @click="decrease(product.id)"
+                                    class="text-white bg-slate-300 hover:bg-slate-400 font-medium rounded-lg text-sm w-full block md:w-auto px-5 py-2.5 text-center"
+                                >
+                                    -
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -61,7 +65,7 @@
                         </div>
                         <div class="mb-5">
                             <label for="delivery" class="block mb-2 text-sm font-medium text-slate-900">Select delivery type</label>
-                            <select id="delivery" v-model="form.delivery" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg block p-2.5">
+                            <select id="delivery" v-model="form.delivery" class="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg block p-2.5" required>
                               <option>Courier</option>
                               <option>In person</option>
                               <option>Package box</option>
@@ -74,14 +78,19 @@
                             <label for="checkbox"   
                                 class="ms-2 text-sm font-medium text-slate-900">Accept terms and conditions</label>
                         </div>
-                        <button 
-                            type="submit"
-                            @click="submit"
-                            @submit.prevent
-                            class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full md:w-auto px-5 py-2.5 text-center mb-5"
-                        >
-                            Submit
-                        </button>
+                        <div class="flex">
+                            <button 
+                                type="submit"
+                                @click="submit"
+                                @click.prevent.self
+                                class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full md:w-auto px-5 py-2.5 text-center mb-5"
+                            >
+                                Order
+                            </button>
+                            <div class="p-2.5 font-semibold">
+                                Total: ${{ cart }}
+                            </div>
+                        </div>
                         <div v-if="error" class="flex items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50" role="alert">
                             <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -98,7 +107,7 @@
                         </svg>
                         <span class="sr-only">Info</span>
                         <div>
-                          <span class="font-medium">Success!</span> You can now access your panel
+                          <span class="font-medium">Success!</span> We'll notify you once package will be available
                         </div>
                       </div>
                 </div>
@@ -119,30 +128,35 @@
                 header: 'Fill details',
                 loggedIn: false,
                 loggedOut: true,
+                cart: 0,
                 products: [
                     {
                         'id': 1,
                         'name': 'Computer',
                         'quantity': 0,
-                        'image': 'https://cdn.pixabay.com/photo/2016/11/18/13/03/apple-1834328_1280.jpg'
+                        'image': 'https://cdn.pixabay.com/photo/2016/11/18/13/03/apple-1834328_1280.jpg',
+                        'price': 100
                     },
                     {
                         'id': 2,
                         'name': 'Mouse',
                         'quantity': 0,
-                        'image': 'https://cdn.pixabay.com/photo/2017/01/22/10/13/mouse-1999471_1280.jpg'
+                        'image': 'https://cdn.pixabay.com/photo/2017/01/22/10/13/mouse-1999471_1280.jpg',
+                        'price': 20
                     },
                     {
                         'id': 3,
                         'name': 'Keyboard',
                         'quantity': 0,
-                        'image': 'https://cdn.pixabay.com/photo/2012/12/17/19/14/keyboard-70506_1280.jpg'
+                        'image': 'https://cdn.pixabay.com/photo/2012/12/17/19/14/keyboard-70506_1280.jpg',
+                        'price': 25
                     },
                     {
                         'id': 4,
                         'name': 'Screen',
                         'quantity': 0,
-                        'image': 'https://cdn.pixabay.com/photo/2017/04/07/12/58/lion-2210947_1280.jpg'
+                        'image': 'https://cdn.pixabay.com/photo/2017/04/07/12/58/lion-2210947_1280.jpg',
+                        'price': 50
                     }
                 ],
                 form: {
@@ -156,9 +170,9 @@
         methods: {
             async submit() {
                 this.$emit('submit', this.form)
-                quantity = 0
-                for(product in this.products) {
-                    quantity += product.quantity
+                let quantity = 0
+                for(id in this.products) {
+                    quantity += this.products[id].quantity
                 }
                 if(quantity > 0) {
                     this.loggedOut = false
@@ -172,10 +186,13 @@
             },
             async increase(id) {
                 this.products[id - 1].quantity += 1
+                this.cart += this.products[id - 1].price
             },
             async decrease(id) {
-                if(this.products[id - 1].quantity > 0)
+                if(this.products[id - 1].quantity > 0) {
                     this.products[id - 1].quantity -= 1
+                    this.cart -= this.products[id - 1].price
+                }
             }
         }
     }).mount("#app")
